@@ -14,7 +14,7 @@ interface CustomError extends Error {
 }
 
 const isDevelopment = process.env.NODE_ENV === 'development';
-const baseURL = isDevelopment ? 'http://localhost:5000' : 'https://relishapprovals.herokuapp.com';
+const baseURL = isDevelopment ? 'http://localhost:5000' : 'https://payment-voucher-system-d8d5d8917e90.herokuapp.com';
 
 console.log('Axios config:', {
   isDevelopment,
