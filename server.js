@@ -17,7 +17,7 @@ app.use((req, res, next) => {
 // CORS configuration based on environment
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? process.env.PRODUCTION_URL 
+    ? ['https://relishapprovals-ac251a472d9b.herokuapp.com', 'https://relishapprovals.herokuapp.com']
     : ['http://localhost:4000', 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
