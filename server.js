@@ -49,10 +49,10 @@ app.use((err, req, res, next) => {
 // Serve static files from the React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client/build')));
-
-  // Serve React app in production for any unmatched routes
+  
+  // Handle React routing, return all requests to React app
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build/index.html'));
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
 }
 
