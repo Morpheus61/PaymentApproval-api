@@ -1,6 +1,8 @@
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const config = {
-  isDevelopment: process.env.NODE_ENV === 'development',
-  baseURL: 'https://paymentapproval-api.onrender.com/api',
+  isDevelopment,
+  baseURL: isDevelopment ? 'http://localhost:5000/api' : 'http://localhost:5000/api',
   NODE_ENV: process.env.NODE_ENV
 };
 

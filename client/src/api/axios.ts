@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-const API_URL = 'https://paymentapproval-api.onrender.com/api';
+const isDevelopment = process.env.NODE_ENV === 'development';
+const API_URL = isDevelopment 
+  ? 'http://localhost:5000/api'
+  : 'http://localhost:5000/api';  
 
 // Create the axios instance with base configuration
 const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': '*'
   },
   withCredentials: false // Important for CORS
 });
@@ -34,12 +38,21 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('Response error:', {
-      status: error.response?.status,
-      url: error.config?.url,
-      message: error.message,
-      error: error.response?.data
-    });
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('Response error:', {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers
+      });
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('Request error:', error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error:', error.message);
+    }
     return Promise.reject(error);
   }
 );
