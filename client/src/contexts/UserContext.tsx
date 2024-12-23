@@ -77,13 +77,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     isLoading
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <UserContext.Provider value={value}>
-      {children}
+      {isLoading ? <div>Loading...</div> : children}
     </UserContext.Provider>
   );
 };
