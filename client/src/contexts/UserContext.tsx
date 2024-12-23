@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import axios from '../config/axios';
+import axiosInstance from '../api/axios';
 
 interface User {
   id: string;
@@ -37,8 +37,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('/auth/me');
-          console.log('Auth check response:', response.data);
+          const response = await axiosInstance.get('/auth/me');
           setUser(response.data);
         } catch (error) {
           console.error('Auth initialization error:', error);
@@ -54,9 +53,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await axios.post('/api/auth/login', { username, password });
+      const response = await axiosInstance.post('/auth/login', { username, password });
       const { token, user } = response.data;
-      console.log('Login successful:', user);
       localStorage.setItem('token', token);
       setUser(user);
       return user;
@@ -67,7 +65,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
-    console.log('Logging out');
     localStorage.removeItem('token');
     setUser(null);
   };
