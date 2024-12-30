@@ -12,7 +12,6 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",
-    "prestart": "npm run build",
     "start": "node server.js"
   },
   "dependencies": {

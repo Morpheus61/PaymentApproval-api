@@ -2,7 +2,11 @@ services:
   - type: web
     name: payment-approval-app
     env: node
-    buildCommand: npm install && npm run build
+    buildCommand: |
+      npm install
+      npm run build
+      mkdir -p /opt/render/project/src/dist
+      cp -r dist/* /opt/render/project/src/dist/
     startCommand: node server.js
     staticPublishPath: ./dist
     envVars:
