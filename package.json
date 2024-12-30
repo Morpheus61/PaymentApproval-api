@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",
-    "start": "node server.js"
+    "start": "npm run build && node server.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",

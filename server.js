@@ -19,7 +19,7 @@ console.log('Environment:', {
 });
 
 // Determine static directory
-const distDir = join(process.cwd(), 'dist');
+const distDir = resolve(process.cwd(), 'dist');
 console.log('Static directory:', distDir);
 
 // List directory contents
@@ -43,6 +43,19 @@ const listDir = (path) => {
 // Log current state
 console.log('\nCurrent directory structure:');
 listDir(process.cwd());
+
+// Create dist if it doesn't exist
+if (!fs.existsSync(distDir)) {
+  console.log('\nRunning build since dist directory is missing...');
+  try {
+    const { execSync } = await import('child_process');
+    execSync('npm run build', { stdio: 'inherit' });
+    console.log('Build completed successfully');
+  } catch (err) {
+    console.error('Build failed:', err);
+  }
+}
+
 listDir(distDir);
 
 // Serve static files
