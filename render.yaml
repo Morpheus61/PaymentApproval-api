@@ -3,27 +3,9 @@ services:
     name: payment-approval-app
     env: node
     buildCommand: |
-      echo "Current directory before build:"
-      pwd
-      ls -la
-      
-      echo "\nRunning npm install..."
       npm install
-      
-      echo "\nRunning build..."
       npm run build
-      
-      echo "\nContents after build:"
-      ls -la
-      echo "\nContents of dist:"
-      ls -la dist/
-    startCommand: |
-      echo "Starting server with directory contents:"
-      pwd
-      ls -la
-      echo "\nContents of dist:"
-      ls -la dist/
-      node server.js
+    startCommand: node server.js
     staticPublishPath: /opt/render/project/src/dist
     envVars:
       - key: NODE_ENV
