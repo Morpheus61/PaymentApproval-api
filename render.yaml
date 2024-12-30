@@ -5,19 +5,11 @@ services:
     buildCommand: |
       npm install
       npm run build
-      pwd
-      echo "Build directory contents:"
-      ls -la dist/
-    startCommand: node server.js
-    staticPublishPath: ./dist
-    envVars:
-      - key: NODE_VERSION
-        value: 18.17.0
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 5000
-    disk:
-      name: build-disk
-      mountPath: /opt/render/project/src/dist
-      sizeGB: 1
+      ls -la
+      echo "Build complete. Contents of current directory:"
+      ls -R
+    startCommand: |
+      echo "Starting server with contents:"
+      ls -R
+      node server.js
+    staticPublishPath: /opt/render/project/src/dist

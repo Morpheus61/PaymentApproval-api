@@ -9,18 +9,20 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-    },
-  },
   build: {
-    outDir: resolve(__dirname, 'dist'),
+    outDir: process.env.RENDER 
+      ? '/opt/render/project/src/dist'
+      : resolve(__dirname, 'dist'),
     emptyOutDir: true,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html')
       }
     }
-  }
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
 });
