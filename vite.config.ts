@@ -5,18 +5,17 @@ import { resolve } from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: './',  
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-  },
   build: {
-    outDir: process.env.RENDER 
-      ? '/opt/render/project/src/dist'
-      : resolve(__dirname, 'dist'),
+    outDir: 'dist',
     emptyOutDir: true,
+    sourcemap: true,
+    minify: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html')
+        app: resolve(__dirname, 'index.html')
+      },
+      output: {
+        dir: 'dist'
       }
     }
   },

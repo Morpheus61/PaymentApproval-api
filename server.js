@@ -19,15 +19,8 @@ console.log('Environment:', {
 });
 
 // Determine static directory
-const distDir = process.env.RENDER 
-  ? '/opt/render/project/src/dist'
-  : join(__dirname, 'dist');
-
-// Ensure the directory exists
-if (!fs.existsSync(distDir)) {
-  console.log(`Creating directory: ${distDir}`);
-  fs.mkdirSync(distDir, { recursive: true });
-}
+const distDir = join(process.cwd(), 'dist');
+console.log('Static directory:', distDir);
 
 // List directory contents
 const listDir = (path) => {
@@ -35,6 +28,11 @@ const listDir = (path) => {
     console.log(`\nListing contents of ${path}:`);
     const items = fs.readdirSync(path);
     console.log(items);
+    items.forEach(item => {
+      const fullPath = join(path, item);
+      const stats = fs.statSync(fullPath);
+      console.log(`${item}: ${stats.isDirectory() ? 'directory' : 'file'} (${stats.size} bytes)`);
+    });
     return items;
   } catch (err) {
     console.error(`Error reading ${path}:`, err);
@@ -45,7 +43,6 @@ const listDir = (path) => {
 // Log current state
 console.log('\nCurrent directory structure:');
 listDir(process.cwd());
-listDir(__dirname);
 listDir(distDir);
 
 // Serve static files
@@ -61,6 +58,8 @@ app.get('*', (req, res) => {
   try {
     if (fs.existsSync(indexPath)) {
       console.log('Found index.html, serving...');
+      const indexContent = fs.readFileSync(indexPath, 'utf8');
+      console.log('index.html content length:', indexContent.length);
       res.sendFile(indexPath);
     } else {
       console.error('index.html not found');
@@ -87,7 +86,8 @@ Environment:
 ${JSON.stringify({
   NODE_ENV: process.env.NODE_ENV,
   PWD: process.env.PWD,
-  RENDER: process.env.RENDER
+  RENDER: process.env.RENDER,
+  PATH: process.env.PATH
 }, null, 2)}
         </pre>
       `);

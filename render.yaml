@@ -3,13 +3,31 @@ services:
     name: payment-approval-app
     env: node
     buildCommand: |
-      npm install
-      npm run build
+      echo "Current directory before build:"
+      pwd
       ls -la
-      echo "Build complete. Contents of current directory:"
-      ls -R
+      
+      echo "\nRunning npm install..."
+      npm install
+      
+      echo "\nChecking vite.config.ts:"
+      cat vite.config.ts
+      
+      echo "\nRunning build..."
+      VITE_CJS_TRACE=1 npm run build
+      
+      echo "\nContents after build:"
+      ls -la
+      echo "\nContents of dist:"
+      ls -la dist/
+      
+      echo "\nCopying files to ensure they exist..."
+      cp -r dist/* /opt/render/project/src/dist/
     startCommand: |
-      echo "Starting server with contents:"
-      ls -R
+      echo "Starting server with directory contents:"
+      pwd
+      ls -la
+      echo "\nContents of dist:"
+      ls -la dist/
       node server.js
     staticPublishPath: /opt/render/project/src/dist
