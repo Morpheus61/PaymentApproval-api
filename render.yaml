@@ -2,12 +2,17 @@ services:
   - type: web
     name: payment-approval-app
     env: node
-    buildCommand: |
-      npm install
-      npm run build
-      mkdir -p /opt/render/project/src/dist
-      cp -r dist/* /opt/render/project/src/dist/
-    startCommand: node server.js
+    buildCommand: npm install && npm run build
+    startCommand: |
+      ls -la
+      echo "Current directory contents:"
+      ls -R
+      echo "Creating dist directory..."
+      mkdir -p dist
+      echo "Copying build files..."
+      cp -r /opt/render/project/src/dist/* dist/
+      echo "Starting server..."
+      node server.js
     staticPublishPath: ./dist
     envVars:
       - key: NODE_VERSION
