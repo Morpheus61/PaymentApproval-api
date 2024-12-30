@@ -9,47 +9,63 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Possible static file locations
-const possiblePaths = [
-  join(__dirname, 'dist'),
-  join(__dirname, 'client', 'build'),
-  '/opt/render/project/src/dist',
-  '/opt/render/project/src/client/build'
-];
-
-// Find the first directory that exists
-let staticDir = possiblePaths.find(path => {
-  try {
-    return fs.existsSync(path) && fs.existsSync(join(path, 'index.html'));
-  } catch (err) {
-    return false;
+// List all files in a directory recursively
+function listFilesRecursively(dir) {
+  const files = [];
+  const items = fs.readdirSync(dir);
+  
+  for (const item of items) {
+    const fullPath = join(dir, item);
+    const stat = fs.statSync(fullPath);
+    
+    if (stat.isDirectory()) {
+      files.push(`Directory: ${fullPath}`);
+      files.push(...listFilesRecursively(fullPath));
+    } else {
+      files.push(`File: ${fullPath}`);
+    }
   }
-}) || join(__dirname, 'dist'); // fallback to dist
+  
+  return files;
+}
 
-// Log the paths for debugging
+// Log directory structure
 console.log('Current directory:', __dirname);
-console.log('Checking static directories:', possiblePaths);
-console.log('Using static directory:', staticDir);
+console.log('Directory structure:');
+try {
+  console.log(listFilesRecursively(__dirname).join('\n'));
+} catch (err) {
+  console.error('Error listing directory:', err);
+}
 
-// Serve static files
-app.use(express.static(staticDir));
+// Serve static files from dist
+app.use(express.static('dist'));
 
 // Handle all routes for SPA
 app.get('*', (req, res) => {
   console.log('Request path:', req.path);
-  const indexPath = join(staticDir, 'index.html');
-  console.log('Serving index.html from:', indexPath);
   
-  // Check if index.html exists
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
-    console.error('Error: index.html not found at', indexPath);
-    res.status(404).send('index.html not found');
+  // Try multiple possible locations for index.html
+  const possiblePaths = [
+    join(__dirname, 'dist', 'index.html'),
+    join(process.cwd(), 'dist', 'index.html'),
+    '/opt/render/project/src/dist/index.html'
+  ];
+  
+  console.log('Checking paths:', possiblePaths);
+  
+  for (const path of possiblePaths) {
+    console.log('Checking path:', path);
+    if (fs.existsSync(path)) {
+      console.log('Found index.html at:', path);
+      return res.sendFile(path);
+    }
   }
+  
+  console.error('Error: index.html not found in any location');
+  res.status(404).send('index.html not found');
 });
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  console.log(`Serving static files from: ${staticDir}`);
 });
