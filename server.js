@@ -1,6 +1,6 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -9,54 +9,40 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 5000;
 
-// List all files in a directory recursively
-function listDir(dir) {
-  try {
-    const items = fs.readdirSync(dir);
-    console.log(`Contents of ${dir}:`, items);
-    
-    for (const item of items) {
-      const fullPath = join(dir, item);
-      const stat = fs.statSync(fullPath);
-      
-      if (stat.isDirectory()) {
-        console.log(`Directory: ${fullPath}`);
-        listDir(fullPath);
-      } else {
-        console.log(`File: ${fullPath}`);
-      }
-    }
-  } catch (err) {
-    console.error(`Error reading directory ${dir}:`, err);
-  }
+// Debug info
+console.log('Environment:', {
+  NODE_ENV: process.env.NODE_ENV,
+  PWD: process.env.PWD,
+  RENDER: process.env.RENDER,
+  __dirname,
+  cwd: process.cwd()
+});
+
+// Determine static directory
+const staticDir = resolve(__dirname, 'dist');
+console.log('Static directory:', staticDir);
+
+// Create dist if it doesn't exist
+if (!fs.existsSync(staticDir)) {
+  console.log('Creating dist directory...');
+  fs.mkdirSync(staticDir, { recursive: true });
 }
 
-// Try different static directories
-const possibleDirs = [
-  join(__dirname, 'dist'),
-  join(process.cwd(), 'dist'),
-  '/opt/render/project/src/dist',
-  './dist'
-];
-
-// Find first available directory
-let staticDir = possibleDirs.find(dir => {
+// List directory contents
+const listDir = (path) => {
   try {
-    return fs.existsSync(dir) && fs.statSync(dir).isDirectory();
+    const items = fs.readdirSync(path);
+    console.log(`\nContents of ${path}:`, items);
+    return items;
   } catch (err) {
-    return false;
+    console.error(`Error reading ${path}:`, err);
+    return [];
   }
-}) || join(__dirname, 'dist');
+};
 
-console.log('Environment:', process.env.NODE_ENV);
-console.log('Current directory:', __dirname);
-console.log('Working directory:', process.cwd());
-console.log('Selected static directory:', staticDir);
-
-// List contents of important directories
-console.log('\nDirectory structure:');
+// Log contents
+console.log('\nDirectory contents:');
 listDir(__dirname);
-listDir(process.cwd());
 listDir(staticDir);
 
 // Serve static files
@@ -64,22 +50,28 @@ app.use(express.static(staticDir));
 
 // Handle all routes for SPA
 app.get('*', (req, res) => {
+  console.log('\nHandling request:', req.path);
+  
   const indexPath = join(staticDir, 'index.html');
-  console.log('Request path:', req.path);
   console.log('Looking for index.html at:', indexPath);
   
   if (fs.existsSync(indexPath)) {
     console.log('Found index.html, serving...');
     res.sendFile(indexPath);
   } else {
-    console.error('Error: index.html not found at', indexPath);
-    console.log('Available files in static directory:');
-    listDir(staticDir);
-    res.status(404).send('index.html not found');
+    console.error('index.html not found');
+    res.status(404).send(`
+      <h1>Debug Info</h1>
+      <pre>
+        Static Dir: ${staticDir}
+        Index Path: ${indexPath}
+        Directory Contents: ${JSON.stringify(listDir(staticDir), null, 2)}
+      </pre>
+    `);
   }
 });
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`\nServer running at http://localhost:${port}`);
   console.log(`Serving static files from: ${staticDir}`);
 });
