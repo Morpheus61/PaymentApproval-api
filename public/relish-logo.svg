@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <circle cx="250" cy="250" r="240" fill="white"/>
+  <text x="70" y="280" font-family="Arial" font-size="120" fill="#8A2BE2">r</text>
+  <text x="120" y="280" font-family="Arial" font-size="120" fill="#8A2BE2">e</text>
+  <text x="180" y="280" font-family="Arial" font-size="120" fill="#8A2BE2">l</text>
+  <text x="220" y="280" font-family="Arial" font-size="120" fill="#FF4500">i</text>
+  <text x="300" y="280" font-family="Arial" font-size="120" fill="#8A2BE2">s</text>
+  <text x="370" y="280" font-family="Arial" font-size="120" fill="#8A2BE2">h</text>
+  <path d="M220 260 L220 320" stroke="#FF4500" stroke-width="20" stroke-linecap="round"/>
+  <path d="M100 350 Q250 400 400 350" stroke="#20B2AA" stroke-width="8" fill="none"/>
+  <path d="M120 360 Q250 410 380 360" stroke="#808080" stroke-width="4" fill="none"/>
+</svg>
