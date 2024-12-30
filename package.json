@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest",
+    "start": "node server.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
@@ -17,12 +18,14 @@
     "date-fns": "^3.3.1",
     "dexie": "^3.2.6",
     "dexie-react-hooks": "^1.1.7",
+    "express": "^4.21.2",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.22.3",
+    "serve-static": "^1.16.2",
     "tailwind-merge": "^2.1.1",
     "zustand": "^4.5.2"
   },
